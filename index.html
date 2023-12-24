@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Dice</title>
+    <link rel="icon" type="image/x-icon" href="https://raysemko.com/wp-content/uploads/2016/01/cropped-DICE-Favicon-300x300.png">
+    <style>
+        body{
+            background-image: url('http://1.bp.blogspot.com/-n9ry_WDCsQE/UKiuKoECTDI/AAAAAAAAAJI/8blEd8gY0dE/s1600/Dice_wallpaper_1280x1024.jpg');
+            background-size: cover;
+        }
+        h1{
+            background-color: red;
+        }
+		table {
+			border-collapse: collapse;
+			width: 100%;
+		}
+		th, td {
+			padding: 8px;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+		th {
+			background-color:#e75480;
+			color: white;
+		}
+        .crystal{
+        background-color: #FFDAB9;
+        }
+	</style>
+</head>
+<body>
+    <h1 class="crystal">Rolling Die Experiment</h1>
+    <div class="crystal">
+    <label for="myInput">Enter the number of attempts:</label>
+	<input type="number" id="num">
+    <table>
+		<thead>
+			<tr>
+				<th>Die Value</th>
+				<th>No. of times Occured</th>
+				<th>Deviated from mean value <span id="av"></span></th>
+				<th>Percentage of deviation</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+    <button onclick="start()">Start Rolling</button>
+    <button onclick="reset()">Clear</button>
+    <script>const mod=(value)=>{
+        return value>=0?value:(-1*value)
+    }
+    const rollDie=()=>{
+        let random = Math.floor(Math.random() * 600) + 1;
+        if (random >= 1 && random <= 100)
+        {
+            return 1;
+        }
+        else if (random >= 101 && random <= 200)
+        {
+            return 2;
+        }
+        else if (random >= 201 && random <= 300)
+        {
+            return 3;
+        }
+        else if (random >= 301 && random <= 400)
+        {
+            return 4;
+        }
+        else if (random >= 401 && random <= 500)
+        {
+            return 5;
+        }
+        else if (random >= 501 && random <= 600)
+        {
+            return 6;
+        }
+    }
+    let tab=document.body.getElementsByTagName('table')[0].lastElementChild.rows
+    const start=()=>{
+        reset()
+        let deviation
+        let percentage
+        let attempts=document.getElementById('num').value
+        let trials=attempts
+        let av=Math.floor(trials/6)
+        let result=Array(6)
+        if(attempts==""){
+            alert("Please enter the number of attempts")
+        }
+        else{
+            if(attempts>200000000){
+                alert("Too high value")
+                reset()
+                return;
+            }
+            if(attempts>=100000000){
+                let cont=confirm("It may take some time do you want to continue")
+                if(!cont){
+                    reset()
+                    return;
+                }
+            }
+           for(let i=0;i<result.length;i++){
+            result[i]=0
+           }
+           console.time("While Loop");
+           while (attempts != 0)
+           {
+               outcome = rollDie();
+               switch (outcome)
+               {
+               case 1:
+                   result[0]++;
+                   break;
+               case 2:
+                   result[1]++;
+                   break;
+               case 3:
+                   result[2]++;
+                   break;
+               case 4:
+                   result[3]++;
+                   break;
+               case 5:
+                   result[4]++;
+                   break;
+               case 6:
+                   result[5]++;
+                   break;
+               }
+               attempts--;
+           }
+        }
+        console.timeEnd("While Loop")
+        let a=document.getElementById("av")
+        a.innerHTML=av
+        for(let i=0;i<tab.length;i++){
+            let row=tab[i]
+            row.cells[1].innerHTML=result[i]
+            deviation=mod(av-result[i])
+            row.cells[2].innerHTML=deviation
+            deviation=mod(av-result[i])
+            percentage=(deviation/av)*100   
+            row.cells[3].innerHTML=percentage.toFixed(4)+"%"
+        }
+    }
+    function reset(){
+        for(let i=0;i<tab.length;i++){
+            let row=tab[i]
+            row.cells[1].innerHTML=""
+            row.cells[2].innerHTML=""
+            row.cells[3].innerHTML=""
+        }
+    }</script>
+</body>
+</html>
